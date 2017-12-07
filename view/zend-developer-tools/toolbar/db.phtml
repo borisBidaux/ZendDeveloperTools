@@ -49,6 +49,14 @@
                     <span class="zdt-detail-value zdt-detail-value-right"><?php echo $this->ZendDeveloperToolsTime($this->collector->getQueryTime(Profiler::DELETE)); ?></span>
                 </span>
 
+                <style>
+                    .zdt-detail-dbquery-sql-long .highlight{
+                        color:red!important;
+                    }
+                    .zdt-detail-dbquery-sql-medium .highlight{
+                        color:darkorange!important;
+                    }
+                </style>
                 <span class="zdt-toolbar-info zdt-toolbar-info-heading zdt-toolbar-topspacing zdt-toolbar-dbquery-heading">Query Profiles</span>
                 <span class="zdt-toolbar-info zdt-toolbar-dbquery">
                     <?php $profiler = $this->collector->getProfiler(); ?>
@@ -56,7 +64,8 @@
                         <?php $query = $profile->toArray(); ?>
                         <hr />
                         <span class="zdt-detail-label">SQL</span>
-                        <span class="zdt-detail-value zdt-detail-dbquery zdt-detail-dbquery-sql">
+                        <?php /* change hilight color for long and extra long queries */ ?>
+                        <span class="zdt-detail-value zdt-detail-dbquery zdt-detail-dbquery-sql <?=($profile->getElapsedTime()>0.1?'zdt-detail-dbquery-sql-long':($profile->getElapsedTime()>0.001?'zdt-detail-dbquery-sql-medium':''))?>">
                         <?php /* highlight UPPERCASE words in the query, which should mostly match SQL keywords */ ?>
                         <?php echo preg_replace('/([A-Z]{2,})/', '<span class="highlight">$1</span>', $this->escapeHtml($query['sql'])) ?>
                         </span>
