@@ -83,6 +83,39 @@
                         <span class="zdt-detail-value zdt-detail-dbquery zdt-detail-dbquery-time">
                         <?php echo $this->escapeHtml($this->ZendDeveloperToolsTime($query['elapsed'])) ?>
                         </span>
+                        <span class="zdt-detail-label">Trace</span>
+                        <span class="zdt-detail-value zdt-detail-dbquery zdt-detail-dbquery-time">
+                        <?php
+                            $i = 0;
+                            foreach ($query['stack'] as $stack) {
+                                if (isset($stack['file']) && ((strpos($stack['file'], 'BjyProfiler') !== false) || (strpos($stack['file'], 'Pdo/Statement') !== false))) {
+                                    continue;
+                                }
+
+                                echo '<div class="zdt-detail-context">';
+
+                                if (isset($stack['file'])) {
+                                    echo '#' . ++$i . '&nbsp;';
+
+                                    echo str_replace(getcwd(), '', $stack['file']);
+                                    if (isset($stack['line'])) {
+                                        echo '&nbsp;[' . $stack['line'] . ']';
+                                    }
+                                }
+
+                                if (isset($stack['class'])) {
+                                    echo '<br />&nbsp;&nbsp;';
+                                    echo $stack['class'] . $stack['type'] . $stack['function'] . '()';
+                                }
+                                elseif (isset($stack['function'])) {
+                                    echo '<br />&nbsp;&nbsp;';
+                                    echo $stack['function'] . '()';
+                                }
+
+                                echo '</div>';
+                            }
+                        ?>
+                        </span>
                         <span class="clear"></span>
                     <?php endforeach; ?>
                 </span>
